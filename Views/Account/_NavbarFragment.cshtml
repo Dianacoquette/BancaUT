@@ -1,0 +1,140 @@
+@* ══════════════════════════════════════════════════════════
+   FRAGMENTO PARA _Layout.cshtml de BancaUT
+   Agrega estas directivas al INICIO del archivo _Layout.cshtml
+   (justo después de @* o la primera línea):
+   ══════════════════════════════════════════════════════════ *@
+
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<BancaUT.Models.ApplicationUser> SignInManager
+@inject UserManager<BancaUT.Models.ApplicationUser> UserManager
+
+@* ══════════════════════════════════════════════════════════
+   NAVBAR — Pega esto dentro de tu <nav> o <header>
+   ══════════════════════════════════════════════════════════ *@
+
+@if (SignInManager.IsSignedIn(User))
+{
+    @* Usuario autenticado — mostrar nombre y opciones *@
+    var currentUser = await UserManager.GetUserAsync(User);
+    <div class="nav-user">
+        <span class="nav-greeting">Hola, <strong>@currentUser?.Nombre</strong></span>
+
+        <a asp-controller="Account" asp-action="EditProfile" class="nav-link">
+            Mi Perfil
+        </a>
+
+        <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn-logout">Cerrar sesión</button>
+        </form>
+    </div>
+}
+else
+{
+    @* Usuario no autenticado *@
+    <div class="nav-auth">
+        <a asp-controller="Account" asp-action="Login" class="btn-login">Iniciar sesión</a>
+        <a asp-controller="Account" asp-action="Register" class="btn-register">Crear cuenta</a>
+    </div>
+}
+
+@* ══════════════════════════════════════════════════════════
+   MENSAJE GLOBAL DE ÉXITO (TempData)
+   Pega esto DENTRO del <body>, justo después del <nav>
+   ══════════════════════════════════════════════════════════ *@
+
+@if (TempData["Exito"] != null)
+{
+    <div class="toast-success">
+        ✅ @TempData["Exito"]
+    </div>
+}
+
+@* ══════════════════════════════════════════════════════════
+   CSS SUGERIDO para los elementos del navbar
+   Agrégalo a tu site.css o dentro del _Layout.cshtml
+   ══════════════════════════════════════════════════════════ *@
+
+<style>
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-greeting {
+    font-size: 14px;
+    color: #6b7080;
+}
+
+.nav-link {
+    font-size: 14px;
+    color: #c9a84c;
+    text-decoration: none;
+}
+
+.nav-link:hover { text-decoration: underline; }
+
+.btn-logout {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #6b7080;
+    transition: all .2s;
+}
+
+.btn-logout:hover {
+    border-color: #e05c5c;
+    color: #e05c5c;
+}
+
+.btn-login {
+    padding: 8px 20px;
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 8px;
+    font-size: 14px;
+    color: #c9a84c;
+    text-decoration: none;
+    transition: all .2s;
+}
+
+.btn-login:hover {
+    background: rgba(201,168,76,0.08);
+}
+
+.btn-register {
+    padding: 8px 20px;
+    background: linear-gradient(135deg, #c9a84c, #e8c97a);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0c0e14;
+    text-decoration: none;
+    transition: opacity .2s;
+}
+
+.btn-register:hover { opacity: 0.9; }
+
+.toast-success {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #1e2830;
+    border: 1px solid rgba(107,255,184,0.3);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 14px;
+    color: #6bffb8;
+    z-index: 9999;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    animation: slideIn .3s ease;
+}
+
+@@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+</style>

@@ -1,0 +1,248 @@
+@model BancaUT.Models.ViewModels.EditProfileViewModel
+@{
+    ViewData["Title"] = "Mi Perfil";
+}
+
+@* Esta vista SÍ usa el _Layout.cshtml principal de BancaUT *@
+
+<style>
+    .profile-page {
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .page-header {
+        margin-bottom: 36px;
+    }
+
+    .page-title {
+        font-size: 26px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: #1a1a2e;
+    }
+
+    .page-subtitle {
+        font-size: 14px;
+        color: #6b7080;
+    }
+
+    .section-card {
+        background: #fff;
+        border: 1px solid #e8eaf0;
+        border-radius: 16px;
+        padding: 32px;
+        margin-bottom: 24px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+
+    .section-title {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: #9b9baf;
+        margin-bottom: 24px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f0f0f5;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #4a4a6a;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        width: 100%;
+        border: 1.5px solid #e0e2ec;
+        border-radius: 10px;
+        padding: 11px 16px;
+        font-size: 15px;
+        color: #1a1a2e;
+        font-family: inherit;
+        transition: border-color .2s, box-shadow .2s;
+        outline: none;
+        background: #fafafa;
+    }
+
+    .form-control:focus {
+        border-color: #c9a84c;
+        box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+        background: #fff;
+    }
+
+    .form-control.input-validation-error {
+        border-color: #e05c5c;
+    }
+
+    .field-validation-error {
+        display: block;
+        font-size: 12px;
+        color: #e05c5c;
+        margin-top: 4px;
+    }
+
+    .password-note {
+        font-size: 12px;
+        color: #9b9baf;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    .btn-save {
+        padding: 13px 32px;
+        background: linear-gradient(135deg, #c9a84c, #e8c97a);
+        border: none;
+        border-radius: 10px;
+        color: #0c0e14;
+        font-size: 15px;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        transition: opacity .2s, transform .1s;
+    }
+
+    .btn-save:hover { opacity: 0.9; }
+    .btn-save:active { transform: scale(0.99); }
+
+    .alert-success {
+        background: rgba(107,255,184,0.1);
+        border: 1px solid rgba(107,255,184,0.3);
+        border-radius: 10px;
+        padding: 14px 20px;
+        font-size: 14px;
+        color: #2a9d6f;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .alert-error {
+        background: rgba(224,92,92,0.08);
+        border: 1px solid rgba(224,92,92,0.25);
+        border-radius: 10px;
+        padding: 14px 20px;
+        font-size: 13px;
+        color: #e05c5c;
+        margin-bottom: 24px;
+    }
+
+    @@media (max-width: 500px) {
+        .form-row { grid-template-columns: 1fr; }
+        .section-card { padding: 24px 20px; }
+    }
+</style>
+
+<div class="profile-page">
+    <div class="page-header">
+        <h1 class="page-title">Mi Perfil</h1>
+        <p class="page-subtitle">Administra tu información personal y contraseña</p>
+    </div>
+
+    @* Mensaje de éxito *@
+    @if (TempData["Exito"] != null)
+    {
+        <div class="alert-success">
+            ✅ @TempData["Exito"]
+        </div>
+    }
+
+    @* Errores generales *@
+    @if (!ViewData.ModelState.IsValid)
+    {
+        var generalErrors = ViewData.ModelState[""];
+        if (generalErrors != null && generalErrors.Errors.Count > 0)
+        {
+            <div class="alert-error">
+                @foreach (var error in generalErrors.Errors) { <div>@error.ErrorMessage</div> }
+            </div>
+        }
+    }
+
+    <form asp-action="EditProfile" method="post">
+        @Html.AntiForgeryToken()
+
+        <!-- Sección: Datos personales -->
+        <div class="section-card">
+            <div class="section-title">Datos personales</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Nombre" class="form-label"></label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="field-validation-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Apellido" class="form-label"></label>
+                    <input asp-for="Apellido" class="form-control" />
+                    <span asp-validation-for="Apellido" class="field-validation-error"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="form-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" placeholder="Ej: +52 55 1234 5678" />
+                <span asp-validation-for="PhoneNumber" class="field-validation-error"></span>
+            </div>
+        </div>
+
+        <!-- Sección: Cambio de contraseña -->
+        <div class="section-card">
+            <div class="section-title">Cambiar contraseña</div>
+            <p class="password-note">
+                Deja estos campos vacíos si no deseas cambiar tu contraseña.
+                Si quieres cambiarla, debes ingresar tu contraseña actual primero.
+            </p>
+
+            <div class="form-group">
+                <label asp-for="CurrentPassword" class="form-label"></label>
+                <input asp-for="CurrentPassword" class="form-control"
+                       placeholder="Tu contraseña actual"
+                       autocomplete="current-password" />
+                <span asp-validation-for="CurrentPassword" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="NewPassword" class="form-label"></label>
+                    <input asp-for="NewPassword" class="form-control"
+                           placeholder="Nueva contraseña"
+                           autocomplete="new-password" />
+                    <span asp-validation-for="NewPassword" class="field-validation-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConfirmNewPassword" class="form-label"></label>
+                    <input asp-for="ConfirmNewPassword" class="form-control"
+                           placeholder="Confirmar nueva contraseña"
+                           autocomplete="new-password" />
+                    <span asp-validation-for="ConfirmNewPassword" class="field-validation-error"></span>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-save">Guardar cambios</button>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,389 @@
+@model BancaUT.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BancaUT — Iniciar Sesión</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:        #0c0e14;
+            --panel:     #13161f;
+            --card:      #191c27;
+            --border:    rgba(255,255,255,0.07);
+            --gold:      #c9a84c;
+            --gold-light:#e8c97a;
+            --text:      #e8eaf2;
+            --muted:     #6b7080;
+            --error:     #e05c5c;
+            --input-bg:  rgba(255,255,255,0.04);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 480px;
+        }
+
+        /* ── Panel izquierdo decorativo ── */
+        .left-panel {
+            background: linear-gradient(145deg, #0e1018 0%, #161926 50%, #0c0f17 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            top: -100px; left: -100px;
+            width: 500px; height: 500px;
+            background: radial-gradient(ellipse, rgba(201,168,76,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            bottom: -80px; right: -80px;
+            width: 400px; height: 400px;
+            background: radial-gradient(ellipse, rgba(201,168,76,0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 64px;
+        }
+
+        .brand-icon {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--gold-light);
+            letter-spacing: 0.5px;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(32px, 3vw, 48px);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: var(--muted);
+            line-height: 1.7;
+            max-width: 380px;
+            margin-bottom: 56px;
+        }
+
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .feature-dot {
+            width: 8px; height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .feature-text {
+            font-size: 14px;
+            color: rgba(232,234,242,0.65);
+        }
+
+        /* ── Panel derecho (formulario) ── */
+        .right-panel {
+            background: var(--panel);
+            border-left: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 40px;
+        }
+
+        .auth-box {
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .auth-header {
+            margin-bottom: 36px;
+        }
+
+        .auth-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .auth-header p {
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 13px 16px;
+            color: var(--text);
+            font-size: 15px;
+            font-family: 'DM Sans', sans-serif;
+            transition: border-color .2s, box-shadow .2s;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+        }
+
+        .form-control.input-validation-error {
+            border-color: var(--error);
+        }
+
+        .field-validation-error {
+            display: block;
+            font-size: 12px;
+            color: var(--error);
+            margin-top: 5px;
+        }
+
+        .row-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .check-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .check-label input[type="checkbox"] {
+            accent-color: var(--gold);
+            width: 16px; height: 16px;
+        }
+
+        .link-gold {
+            font-size: 13px;
+            color: var(--gold-light);
+            text-decoration: none;
+        }
+
+        .link-gold:hover { text-decoration: underline; }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+            border: none;
+            border-radius: 10px;
+            color: #0c0e14;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            transition: opacity .2s, transform .1s;
+        }
+
+        .btn-submit:hover { opacity: 0.9; }
+        .btn-submit:active { transform: scale(0.99); }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .auth-footer a {
+            color: var(--gold-light);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-footer a:hover { text-decoration: underline; }
+
+        .alert-error {
+            background: rgba(224,92,92,0.1);
+            border: 1px solid rgba(224,92,92,0.25);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--error);
+            margin-bottom: 20px;
+        }
+
+        .divider { margin: 10px 0; }
+
+        @@media (max-width: 768px) {
+            body { grid-template-columns: 1fr; }
+            .left-panel { display: none; }
+            .right-panel { padding: 40px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Panel izquierdo decorativo -->
+    <div class="left-panel">
+        <div class="brand">
+            <div class="brand-icon">🏦</div>
+            <span class="brand-name">BancaUT</span>
+        </div>
+        <h1 class="hero-title">Tu banca,<br><span>siempre contigo</span></h1>
+        <p class="hero-subtitle">
+            Gestiona tus cuentas, realiza transferencias y controla tus finanzas desde un solo lugar, con la seguridad que mereces.
+        </p>
+        <div class="features">
+            <div class="feature-item">
+                <div class="feature-dot"></div>
+                <span class="feature-text">Transferencias en tiempo real</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-dot"></div>
+                <span class="feature-text">Seguridad bancaria de nivel empresarial</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-dot"></div>
+                <span class="feature-text">Historial completo de movimientos</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-dot"></div>
+                <span class="feature-text">Disponible las 24 horas del día</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel derecho con formulario -->
+    <div class="right-panel">
+        <div class="auth-box">
+            <div class="auth-header">
+                <h2>Iniciar sesión</h2>
+                <p>Accede a tu cuenta BancaUT</p>
+            </div>
+
+            @* Errores generales (credenciales incorrectas, cuenta bloqueada) *@
+            @if (!ViewData.ModelState.IsValid)
+            {
+                var generalErrors = ViewData.ModelState[""];
+                if (generalErrors != null && generalErrors.Errors.Count > 0)
+                {
+                    <div class="alert-error">
+                        @foreach (var error in generalErrors.Errors)
+                        {
+                            <div>@error.ErrorMessage</div>
+                        }
+                    </div>
+                }
+            }
+
+            <form asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control"
+                           placeholder="correo@ejemplo.com"
+                           autocomplete="email" />
+                    <span asp-validation-for="Email" class="field-validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" class="form-control"
+                           placeholder="••••••••"
+                           autocomplete="current-password" />
+                    <span asp-validation-for="Password" class="field-validation-error"></span>
+                </div>
+
+                <div class="row-between">
+                    <label class="check-label">
+                        <input asp-for="RememberMe" />
+                        Recordarme
+                    </label>
+                    <a asp-action="ForgotPassword" class="link-gold">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <button type="submit" class="btn-submit">Ingresar a mi cuenta</button>
+            </form>
+
+            <div class="auth-footer">
+                ¿Aún no tienes cuenta?
+                <div class="divider"></div>
+                <a asp-action="Register">Crear cuenta nueva</a>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+</body>
+</html>
