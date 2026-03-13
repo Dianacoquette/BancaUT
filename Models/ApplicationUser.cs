@@ -1,13 +1,10 @@
 ﻿// Models/ApplicationUser.cs
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BancaUT.Models
 {
-    // Heredamos de IdentityUser para no escribir todo desde cero.
-    // IdentityUser ya incluye: Id, Email, PasswordHash, UserName,
-    // PhoneNumber, LockoutEnd, AccessFailedCount, etc.
-    // Solo agregamos los campos EXTRA que necesita BancaUT.
     public class ApplicationUser : IdentityUser
     {
         [Required]
@@ -20,7 +17,14 @@ namespace BancaUT.Models
 
         public DateTime FechaRegistro { get; set; } = DateTime.UtcNow;
 
-        // Nombre completo calculado — no se guarda en BD
+        [NotMapped]
         public string NombreCompleto => $"{Nombre} {Apellido}";
+
+        // ── Navegación — todas las relaciones del usuario ──
+        public ICollection<Categoria> Categorias { get; set; } = new List<Categoria>();
+        public ICollection<Movimiento> Movimientos { get; set; } = new List<Movimiento>();
+        public ICollection<Presupuesto> Presupuestos { get; set; } = new List<Presupuesto>();
+        public ICollection<MetaAhorro> MetasAhorro { get; set; } = new List<MetaAhorro>();
+        public ICollection<Recordatorio> Recordatorios { get; set; } = new List<Recordatorio>();
     }
 }
