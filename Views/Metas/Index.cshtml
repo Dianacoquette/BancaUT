@@ -1,0 +1,59 @@
+@model IEnumerable<BancaUT.Models.MetaAhorro>
+@{
+    ViewData["Title"] = "Metas de ahorro";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">Metas de ahorro</h2>
+        <p class="text-muted mb-0">Crea metas, agrega bonos y elimina metas cuando sea necesario.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i>Nueva meta</a>
+</div>
+
+<div class="row g-4">
+    @if (Model.Any())
+    {
+        @foreach (var item in Model)
+        {
+            <div class="col-lg-6">
+                <div class="card card-soft h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                            <div>
+                                <h4 class="fw-bold mb-1">@item.Nombre</h4>
+                                <div class="text-muted small">Inicio: @item.FechaInicio.ToString("dd/MM/yyyy") - Objetivo: @item.FechaObjetivo.ToString("dd/MM/yyyy")</div>
+                            </div>
+                            <span class="badge badge-soft">@item.PorcentajeAvance%</span>
+                        </div>
+                        <p class="mb-2">Ahorrado: <strong>$@item.MontoActual.ToString("N2")</strong></p>
+                        <p class="mb-2">Objetivo: <strong>$@item.MontoObjetivo.ToString("N2")</strong></p>
+                        <div class="progress mb-3">
+                            <div class="progress-bar" style="width:@item.PorcentajeAvance%"></div>
+                        </div>
+                        <form asp-action="AgregarBono" method="post" class="row g-2 mb-3">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <div class="col-sm-8">
+                                <input type="number" name="bono" step="0.01" min="0.01" class="form-control" placeholder="Monto del bono" required />
+                            </div>
+                            <div class="col-sm-4 d-grid">
+                                <button type="submit" class="btn btn-success">Agregar bono</button>
+                            </div>
+                        </form>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" onclick="return confirm('¿Deseas eliminar esta meta?');">Eliminar meta</a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="card card-soft">
+                <div class="card-body p-4">
+                    <p class="text-muted mb-0">Todavía no tienes metas de ahorro registradas.</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

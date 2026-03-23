@@ -1,8 +1,31 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero-box">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+            <span class="badge rounded-pill text-bg-light text-primary mb-3">Gestión financiera personal</span>
+            <h1 class="display-5 fw-bold mb-3">Controla tus ingresos, gastos, presupuestos y metas de ahorro.</h1>
+            <p class="lead mb-4">BancaUT te permite registrar movimientos, administrar categorías, definir presupuestos mensuales y llevar el avance de tus metas de ahorro desde un solo panel.</p>
+            <div class="d-flex flex-wrap gap-3">
+                <a asp-controller="Account" asp-action="Login" class="btn btn-light btn-lg px-4">Iniciar sesión</a>
+                <a asp-controller="Account" asp-action="Register" class="btn btn-outline-light btn-lg px-4">Crear cuenta</a>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card card-soft text-dark">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-3">Funciones incluidas</h4>
+                    <ul class="mb-0">
+                        <li>Crear y editar categorías de ingreso y gasto.</li>
+                        <li>Registrar ingresos y gastos con descripción y fecha.</li>
+                        <li>Eliminar y editar movimientos fácilmente.</li>
+                        <li>Configurar presupuestos mensuales por categoría.</li>
+                        <li>Administrar metas de ahorro y agregar bonos.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

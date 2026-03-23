@@ -1,0 +1,231 @@
+@model BancaUT.Models.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="hero-box mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <span class="badge rounded-pill text-bg-light text-primary mb-3">Panel principal</span>
+            <h1 class="display-6 fw-bold mb-2">Tu panorama financiero de hoy</h1>
+            <p class="mb-0 opacity-75">Consulta tu balance general, alertas de presupuesto, metas de ahorro y movimientos recientes.</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <a asp-controller="Movimientos" asp-action="Create" asp-route-tipo="Ingreso" class="btn btn-light">+ Ingreso</a>
+            <a asp-controller="Movimientos" asp-action="Create" asp-route-tipo="Egreso" class="btn btn-outline-light">+ Gasto</a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card stat-ingresos">
+            <div class="small opacity-75">Ingresos acumulados</div>
+            <div class="display-6 fw-bold mt-2">$@Model.Ingresos.ToString("N2")</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card stat-gastos">
+            <div class="small opacity-75">Egresos acumulados</div>
+            <div class="display-6 fw-bold mt-2">$@Model.Gastos.ToString("N2")</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card stat-saldo">
+            <div class="small opacity-75">Saldo disponible</div>
+            <div class="display-6 fw-bold mt-2">$@Model.Saldo.ToString("N2")</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card stat-extra">
+            <div class="small opacity-75">Ahorrado en metas</div>
+            <div class="display-6 fw-bold mt-2">$@Model.AhorradoMetas.ToString("N2")</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6 col-xl-3"><a asp-controller="Categorias" asp-action="Index" class="quick-action"><i class="bi bi-tags text-primary"></i><div><div class="fw-semibold">Categorías</div><small class="text-muted">Administra ingresos y egresos</small></div></a></div>
+    <div class="col-md-6 col-xl-3"><a asp-controller="Presupuestos" asp-action="Index" class="quick-action"><i class="bi bi-wallet2 text-success"></i><div><div class="fw-semibold">Presupuestos</div><small class="text-muted">Control mensual por categoría</small></div></a></div>
+    <div class="col-md-6 col-xl-3"><a asp-controller="Recordatorios" asp-action="Index" class="quick-action"><i class="bi bi-bell text-warning"></i><div><div class="fw-semibold">Recordatorios</div><small class="text-muted">Pagos y pendientes</small></div></a></div>
+    <div class="col-md-6 col-xl-3"><a asp-controller="Reportes" asp-action="Mensual" class="quick-action"><i class="bi bi-bar-chart text-danger"></i><div><div class="fw-semibold">Reportes mensuales</div><small class="text-muted">Resumen detallado del mes</small></div></a></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-7">
+        <div class="card card-soft h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="section-title mb-0">Gastos por categoría</h3>
+                    <a asp-controller="Reportes" asp-action="BalanceGeneral" class="btn btn-sm btn-outline-primary">Ver balance general</a>
+                </div>
+                @if (Model.GastosPorCategoria.Any())
+                {
+                    <canvas id="graficaCategorias" height="220"></canvas>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Todavía no hay gastos para graficar.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-5">
+        <div class="card card-soft h-100">
+            <div class="card-body p-4">
+                <h3 class="section-title">Alertas de presupuesto</h3>
+                @if (Model.AlertasPresupuesto.Any())
+                {
+                    <div class="d-flex flex-column gap-3">
+                        @foreach (var item in Model.AlertasPresupuesto)
+                        {
+                            <div class="budget-alert-card">
+                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
+                                    <strong>@item.Categoria</strong>
+                                    <span class="badge @(item.Excedido ? "text-bg-danger" : "text-bg-warning")">@item.NivelAlerta</span>
+                                </div>
+                                <div class="small text-muted mb-2">Gastado: $@item.Gastado.ToString("N2") de $@item.Limite.ToString("N2")</div>
+                                <div class="progress mb-2">
+                                    <div class="progress-bar @(item.Excedido ? "bg-danger" : "bg-warning")" style="width:@Math.Min(item.PorcentajeUsado,100)%"></div>
+                                </div>
+                                <div class="small @(item.Excedido ? "text-danger" : "text-warning-emphasis")">Uso actual: @item.PorcentajeUsado.ToString("N1")%</div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">No tienes alertas de presupuesto este mes.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-7">
+        <div class="card card-soft h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="section-title mb-0">Historial de movimientos recientes</h3>
+                    <a asp-controller="Movimientos" asp-action="Index" class="btn btn-sm btn-outline-secondary">Ver historial completo</a>
+                </div>
+                @if (Model.MovimientosRecientes.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Tipo</th>
+                                    <th>Categoría</th>
+                                    <th>Descripción</th>
+                                    <th>Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.MovimientosRecientes)
+                                {
+                                    <tr>
+                                        <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                                        <td><span class="badge @(item.Tipo == "Ingreso" ? "text-bg-success" : "text-bg-danger")">@item.Tipo</span></td>
+                                        <td>@(item.Categoria?.Nombre ?? "Sin categoría")</td>
+                                        <td>@item.Descripcion</td>
+                                        <td>$@item.Monto.ToString("N2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">No has registrado movimientos todavía.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-5">
+        <div class="card card-soft mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="section-title mb-0">Recordatorios de pago</h3>
+                    <a asp-controller="Recordatorios" asp-action="Create" class="btn btn-sm btn-outline-primary">Nuevo</a>
+                </div>
+                @if (Model.RecordatoriosPendientes.Any())
+                {
+                    <div class="d-flex flex-column gap-2">
+                        @foreach (var item in Model.RecordatoriosPendientes)
+                        {
+                            <div class="reminder-item">
+                                <div class="fw-semibold">@item.Titulo</div>
+                                <div class="small text-muted">@item.FechaRecordatorio.ToString("dd/MM/yyyy")</div>
+                                @if (!string.IsNullOrWhiteSpace(item.Descripcion))
+                                {
+                                    <div class="small">@item.Descripcion</div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">No tienes recordatorios pendientes.</p>
+                }
+            </div>
+        </div>
+
+        <div class="card card-soft">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="section-title mb-0">Metas de ahorro</h3>
+                    <a asp-controller="Metas" asp-action="Index" class="btn btn-sm btn-outline-success">Ver metas</a>
+                </div>
+                @if (Model.Metas.Any())
+                {
+                    <div class="d-flex flex-column gap-3">
+                        @foreach (var item in Model.Metas)
+                        {
+                            <div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <strong>@item.Nombre</strong>
+                                    <span class="small text-muted">@item.PorcentajeAvance%</span>
+                                </div>
+                                <div class="progress mb-1">
+                                    <div class="progress-bar bg-success" style="width:@item.PorcentajeAvance%"></div>
+                                </div>
+                                <div class="small text-muted">$@item.MontoActual.ToString("N2") de $@item.MontoObjetivo.ToString("N2")</div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Aún no tienes metas de ahorro.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const datos = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.GastosPorCategoria));
+        if (datos.length) {
+            const labels = datos.map(x => x.Categoria);
+            const valores = datos.map(x => x.Total);
+            new Chart(document.getElementById('graficaCategorias'), {
+                type: 'doughnut',
+                data: {
+                    labels,
+                    datasets: [{ data: valores, borderWidth: 0 }]
+                },
+                options: {
+                    plugins: { legend: { position: 'bottom' } },
+                    cutout: '62%'
+                }
+            });
+        }
+    </script>
+}

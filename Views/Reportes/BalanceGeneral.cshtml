@@ -1,0 +1,96 @@
+@model BancaUT.Models.ViewModels.BalanceGeneralViewModel
+@{
+    ViewData["Title"] = "Balance general";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">Balance general</h2>
+        <p class="text-muted mb-0">Resumen integral de ingresos, egresos, saldo y avance de ahorro.</p>
+    </div>
+    <a asp-action="Mensual" class="btn btn-primary">Ver reporte mensual</a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-xl-3"><div class="stat-card stat-ingresos"><div class="small opacity-75">Total ingresos</div><div class="display-6 fw-bold mt-2">$@Model.TotalIngresos.ToString("N2")</div></div></div>
+    <div class="col-md-6 col-xl-3"><div class="stat-card stat-gastos"><div class="small opacity-75">Total egresos</div><div class="display-6 fw-bold mt-2">$@Model.TotalEgresos.ToString("N2")</div></div></div>
+    <div class="col-md-6 col-xl-3"><div class="stat-card stat-saldo"><div class="small opacity-75">Saldo disponible</div><div class="display-6 fw-bold mt-2">$@Model.SaldoDisponible.ToString("N2")</div></div></div>
+    <div class="col-md-6 col-xl-3"><div class="stat-card stat-extra"><div class="small opacity-75">Patrimonio estimado</div><div class="display-6 fw-bold mt-2">$@Model.PatrimonioEstimado.ToString("N2")</div></div></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card card-soft h-100"><div class="card-body p-4">
+            <h3 class="section-title">Ingresos por categoría</h3>
+            @if (Model.IngresosPorCategoria.Any())
+            {
+                @foreach (var item in Model.IngresosPorCategoria)
+                {
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between"><span>@item.Nombre</span><strong>$@item.Total.ToString("N2")</strong></div>
+                        <div class="progress mt-2"><div class="progress-bar bg-success" style="width:@item.Porcentaje%"></div></div>
+                        <div class="small text-muted mt-1">@item.Porcentaje% del total de ingresos</div>
+                    </div>
+                }
+            }
+            else { <p class="text-muted mb-0">No hay ingresos registrados.</p> }
+        </div></div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card card-soft h-100"><div class="card-body p-4">
+            <h3 class="section-title">Egresos por categoría</h3>
+            @if (Model.EgresosPorCategoria.Any())
+            {
+                @foreach (var item in Model.EgresosPorCategoria)
+                {
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between"><span>@item.Nombre</span><strong>$@item.Total.ToString("N2")</strong></div>
+                        <div class="progress mt-2"><div class="progress-bar bg-danger" style="width:@item.Porcentaje%"></div></div>
+                        <div class="small text-muted mt-1">@item.Porcentaje% del total de egresos</div>
+                    </div>
+                }
+            }
+            else { <p class="text-muted mb-0">No hay egresos registrados.</p> }
+        </div></div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card card-soft h-100"><div class="card-body p-4">
+            <h3 class="section-title">Metas de ahorro</h3>
+            <div class="mb-3">
+                <div class="small text-muted">Total ahorrado</div>
+                <div class="h4 fw-bold">$@Model.TotalAhorradoMetas.ToString("N2")</div>
+            </div>
+            <div>
+                <div class="small text-muted">Monto pendiente para completar metas</div>
+                <div class="h4 fw-bold">$@Model.TotalPendienteMetas.ToString("N2")</div>
+            </div>
+        </div></div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card card-soft h-100"><div class="card-body p-4">
+            <h3 class="section-title">Últimos movimientos</h3>
+            @if (Model.UltimosMovimientos.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead><tr><th>Fecha</th><th>Tipo</th><th>Categoría</th><th>Monto</th></tr></thead>
+                        <tbody>
+                        @foreach (var item in Model.UltimosMovimientos)
+                        {
+                            <tr>
+                                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                                <td><span class="badge @(item.Tipo == "Ingreso" ? "text-bg-success" : "text-bg-danger")">@item.Tipo</span></td>
+                                <td>@(item.Categoria?.Nombre ?? "Sin categoría")</td>
+                                <td>$@item.Monto.ToString("N2")</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else { <p class="text-muted mb-0">No hay movimientos registrados.</p> }
+        </div></div>
+    </div>
+</div>

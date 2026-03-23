@@ -1,0 +1,116 @@
+@model IEnumerable<BancaUT.Models.Movimiento>
+@{
+    ViewData["Title"] = "Historial de movimientos";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">Historial de movimientos</h2>
+        <p class="text-muted mb-0">Consulta, filtra y administra todos tus ingresos y egresos.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Create" asp-route-tipo="Ingreso" class="btn btn-success">Nuevo ingreso</a>
+        <a asp-action="Create" asp-route-tipo="Egreso" class="btn btn-danger">Nuevo gasto</a>
+    </div>
+</div>
+
+<div class="card card-soft form-soft mb-4">
+    <div class="card-body p-4">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">Tipo</label>
+                <select name="tipo" class="form-select">
+                    <option value="">Todos</option>
+                    @if ((string?)ViewBag.Tipo == "Ingreso")
+                    {
+                        <option value="Ingreso" selected>Ingreso</option>
+                    }
+                    else
+                    {
+                        <option value="Ingreso">Ingreso</option>
+                    }
+                    @if ((string?)ViewBag.Tipo == "Egreso")
+                    {
+                        <option value="Egreso" selected>Egreso</option>
+                    }
+                    else
+                    {
+                        <option value="Egreso">Egreso</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Mes</label>
+                <input type="number" name="mes" class="form-control" min="1" max="12" value="@ViewBag.Mes" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Año</label>
+                <input type="number" name="anio" class="form-control" min="2000" max="2100" value="@ViewBag.Anio" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Buscar</label>
+                <input type="text" name="texto" class="form-control" value="@ViewBag.Texto" placeholder="Descripción o categoría" />
+            </div>
+            <div class="col-md-2 d-grid">
+                <button class="btn btn-primary">Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="mini-stat-card border-success-subtle">
+            <div class="text-muted small">Ingresos del filtro</div>
+            <div class="h3 fw-bold text-success mb-0">$@(((decimal)ViewBag.IngresosFiltrados).ToString("N2"))</div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mini-stat-card border-danger-subtle">
+            <div class="text-muted small">Egresos del filtro</div>
+            <div class="h3 fw-bold text-danger mb-0">$@(((decimal)ViewBag.EgresosFiltrados).ToString("N2"))</div>
+        </div>
+    </div>
+</div>
+
+<div class="card card-soft">
+    <div class="card-body p-4">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Categoría</th>
+                            <th>Descripción</th>
+                            <th>Monto</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                            <td><span class="badge @(item.Tipo == "Ingreso" ? "text-bg-success" : "text-bg-danger")">@item.Tipo</span></td>
+                            <td>@(item.Categoria?.Nombre ?? "Sin categoría")</td>
+                            <td>@item.Descripcion</td>
+                            <td>$@item.Monto.ToString("N2")</td>
+                            <td class="text-end">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning me-1">Editar</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Deseas eliminar este movimiento?');">Eliminar</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="text-muted mb-0">No hay movimientos con los filtros seleccionados.</p>
+        }
+    </div>
+</div>

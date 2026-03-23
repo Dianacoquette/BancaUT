@@ -8,24 +8,214 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
-  margin-bottom: 60px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f5f7fb 0%, #eef3ff 100%);
+  color: #1f2937;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+.navbar-banca {
+  background: linear-gradient(90deg, #0f172a, #1d4ed8);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .18);
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.card-soft,
+.table-soft,
+.form-soft {
+  background: #fff;
+  border: 0;
+  border-radius: 20px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+}
+
+.stat-card {
+  border-radius: 22px;
+  color: #fff;
+  padding: 1.25rem;
+  min-height: 145px;
+}
+
+.stat-ingresos { background: linear-gradient(135deg, #16a34a, #22c55e); }
+.stat-gastos { background: linear-gradient(135deg, #dc2626, #ef4444); }
+.stat-saldo { background: linear-gradient(135deg, #1d4ed8, #3b82f6); }
+.stat-extra { background: linear-gradient(135deg, #7c3aed, #8b5cf6); }
+
+.quick-action {
+  border-radius: 18px;
+  padding: 1rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  gap: .85rem;
+  align-items: center;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(15,23,42,.08);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.quick-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px rgba(15,23,42,.12);
+}
+
+.quick-action i {
+  font-size: 1.65rem;
+}
+
+.section-title {
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.badge-soft {
+  background: #e0e7ff;
+  color: #1d4ed8;
+}
+
+.progress {
+  height: 12px;
+  border-radius: 999px;
+}
+
+.table > :not(caption) > * > * {
+  vertical-align: middle;
+}
+
+.hero-box {
+  background: linear-gradient(135deg, #0f172a, #2563eb);
+  color: white;
+  border-radius: 24px;
+  padding: 2.2rem;
+  box-shadow: 0 20px 42px rgba(37, 99, 235, .22);
+}
+
+.login-card {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.budget-alert-card,
+.reminder-item,
+.mini-stat-card {
+  border-radius: 16px;
+  padding: 1rem;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+}
+
+.reminder-danger {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.mini-stat-card {
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(15,23,42,.06);
+}
+
+.auth-page-body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #eff4ff 0%, #dbeafe 100%);
+}
+
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+}
+
+.auth-brand-panel {
+  background: linear-gradient(135deg, #0f172a, #1d4ed8);
+  color: #fff;
+  padding: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-feature-list {
+  display: grid;
+  gap: .9rem;
+  color: rgba(255,255,255,.92);
+}
+
+.auth-feature-list i {
+  margin-right: .55rem;
+}
+
+.auth-card-clean {
+  margin: auto;
+  width: min(100%, 470px);
+}
+
+.auth-card-wide {
+  width: min(100%, 620px);
+}
+
+.auth-card {
+  background: rgba(255,255,255,.96);
+  border-radius: 28px;
+  box-shadow: 0 20px 50px rgba(15,23,42,.15);
+  padding: 2rem;
+}
+
+.auth-logo-circle {
+  width: 66px;
+  height: 66px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  color: #1d4ed8;
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+}
+
+.auth-input-group .input-group-text {
+  background: #eff6ff;
+  border-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.auth-input-group .form-control {
+  border-color: #dbeafe;
+}
+
+.auth-input-group .form-control:focus {
+  box-shadow: 0 0 0 .2rem rgba(59,130,246,.15);
+  border-color: #93c5fd;
+}
+
+.auth-submit {
+  border-radius: 14px;
+  padding: .9rem 1rem;
+}
+
+.auth-link {
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 991.98px) {
+  .auth-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-brand-panel {
+    min-height: 280px;
+    padding: 2rem;
+  }
+
+  .auth-card-clean,
+  .auth-card-wide {
+    width: calc(100% - 2rem);
+    margin: -40px auto 2rem;
+    position: relative;
+    z-index: 1;
+  }
 }

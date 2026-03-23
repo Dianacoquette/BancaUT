@@ -33,7 +33,7 @@ namespace BancaUT.Controllers
         public IActionResult Register()
         {
             if (User.Identity?.IsAuthenticated == true)
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Dashboard");
             return View();
         }
 
@@ -62,7 +62,7 @@ namespace BancaUT.Controllers
                 _logger.LogInformation("Nuevo usuario registrado: {Email}", model.Email);
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 TempData["Exito"] = $"¡Bienvenido a BancaUT, {user.Nombre}!";
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Dashboard");
             }
 
             // Mostrar errores: email duplicado, contraseña débil, etc.
@@ -80,7 +80,7 @@ namespace BancaUT.Controllers
         public IActionResult Login(string? returnUrl = null)
         {
             if (User.Identity?.IsAuthenticated == true)
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Dashboard");
 
             ViewData["ReturnUrl"] = returnUrl;
             return View();
@@ -110,7 +110,7 @@ namespace BancaUT.Controllers
                 if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                     return Redirect(returnUrl);
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Dashboard");
             }
 
             if (result.IsLockedOut)

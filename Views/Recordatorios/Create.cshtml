@@ -1,0 +1,33 @@
+@model BancaUT.Models.Recordatorio
+@{
+    ViewData["Title"] = "Nuevo recordatorio";
+}
+
+<div class="card card-soft form-soft">
+    <div class="card-body p-4">
+        <h2 class="fw-bold mb-3">Crear recordatorio de pago</h2>
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="mb-3">
+                <label asp-for="Titulo" class="form-label"></label>
+                <input asp-for="Titulo" class="form-control" placeholder="Ej. Pago de renta, internet, colegiatura" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Descripcion" class="form-label"></label>
+                <textarea asp-for="Descripcion" class="form-control" rows="3" placeholder="Agrega detalles del pago"></textarea>
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="FechaRecordatorio" class="form-label"></label>
+                <input asp-for="FechaRecordatorio" type="date" class="form-control" value="@Model.FechaRecordatorio.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="FechaRecordatorio" class="text-danger"></span>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

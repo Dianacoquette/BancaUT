@@ -1,0 +1,77 @@
+@model BancaUT.Models.ViewModels.RecordatoriosIndexViewModel
+@{
+    ViewData["Title"] = "Recordatorios de pago";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">Recordatorios de pago</h2>
+        <p class="text-muted mb-0">Administra vencimientos, servicios y pagos importantes.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i>Nuevo recordatorio</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card card-soft h-100"><div class="card-body p-4">
+            <h3 class="section-title">Pendientes</h3>
+            @if (Model.Pendientes.Any())
+            {
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var item in Model.Pendientes)
+                    {
+                        var vencido = item.FechaRecordatorio.Date < DateTime.Today;
+                        <div class="reminder-item @(vencido ? "reminder-danger" : string.Empty)">
+                            <div class="d-flex justify-content-between align-items-start gap-3">
+                                <div>
+                                    <div class="fw-semibold">@item.Titulo</div>
+                                    <div class="small text-muted">Fecha: @item.FechaRecordatorio.ToString("dd/MM/yyyy")</div>
+                                    @if (!string.IsNullOrWhiteSpace(item.Descripcion))
+                                    {
+                                        <div class="small mt-1">@item.Descripcion</div>
+                                    }
+                                </div>
+                                <span class="badge @(vencido ? "text-bg-danger" : "text-bg-warning")">@(vencido ? "Vencido" : "Pendiente")</span>
+                            </div>
+                            <div class="d-flex gap-2 mt-3">
+                                <form asp-action="Toggle" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button class="btn btn-success btn-sm">Marcar como pagado</button>
+                                </form>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Deseas eliminar este recordatorio?');">Eliminar</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else { <p class="text-muted mb-0">No tienes recordatorios pendientes.</p> }
+        </div></div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card card-soft h-100"><div class="card-body p-4">
+            <h3 class="section-title">Completados</h3>
+            @if (Model.Completados.Any())
+            {
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var item in Model.Completados)
+                    {
+                        <div class="reminder-item bg-light">
+                            <div class="fw-semibold">@item.Titulo</div>
+                            <div class="small text-muted mb-2">@item.FechaRecordatorio.ToString("dd/MM/yyyy")</div>
+                            <div class="d-flex gap-2">
+                                <form asp-action="Toggle" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button class="btn btn-outline-secondary btn-sm">Volver a pendiente</button>
+                                </form>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Deseas eliminar este recordatorio?');">Eliminar</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else { <p class="text-muted mb-0">No hay recordatorios completados todavía.</p> }
+        </div></div>
+    </div>
+</div>

@@ -1,0 +1,138 @@
+@model BancaUT.Models.ViewModels.ReporteMensualViewModel
+@{
+    ViewData["Title"] = "Reportes mensuales";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">Reporte mensual</h2>
+        <p class="text-muted mb-0">Analiza tus ingresos, egresos, presupuestos y movimientos del mes seleccionado.</p>
+    </div>
+    <a asp-action="BalanceGeneral" class="btn btn-outline-primary">Balance general</a>
+</div>
+
+<div class="card card-soft form-soft mb-4">
+    <div class="card-body p-4">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Mes</label>
+                <select name="mes" class="form-select">
+                    @for (int i = 1; i <= 12; i++)
+                    {
+                        @if (i == Model.Mes)
+                        {
+                            <option value="@i" selected>@(new DateTime(Model.Anio, i, 1).ToString("MMMM"))</option>
+                        }
+                        else
+                        {
+                            <option value="@i">@(new DateTime(Model.Anio, i, 1).ToString("MMMM"))</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Año</label>
+                <input type="number" name="anio" class="form-control" value="@Model.Anio" min="2000" max="2100" />
+            </div>
+            <div class="col-md-4 d-grid">
+                <button class="btn btn-primary">Consultar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4"><div class="stat-card stat-ingresos"><div class="small opacity-75 text-capitalize">Ingresos de @Model.NombreMes</div><div class="display-6 fw-bold mt-2">$@Model.TotalIngresos.ToString("N2")</div></div></div>
+    <div class="col-md-4"><div class="stat-card stat-gastos"><div class="small opacity-75 text-capitalize">Egresos de @Model.NombreMes</div><div class="display-6 fw-bold mt-2">$@Model.TotalEgresos.ToString("N2")</div></div></div>
+    <div class="col-md-4"><div class="stat-card stat-saldo"><div class="small opacity-75">Balance del mes</div><div class="display-6 fw-bold mt-2">$@Model.BalanceMes.ToString("N2")</div></div></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card card-soft h-100"><div class="card-body p-4">
+            <h3 class="section-title">Ingresos por categoría</h3>
+            @if (Model.IngresosPorCategoria.Any())
+            {
+                <ul class="list-group list-group-flush">
+                @foreach (var item in Model.IngresosPorCategoria)
+                {
+                    <li class="list-group-item d-flex justify-content-between px-0"><span>@item.Categoria</span><strong>$@item.Total.ToString("N2")</strong></li>
+                }
+                </ul>
+            }
+            else { <p class="text-muted mb-0">Sin ingresos en este periodo.</p> }
+        </div></div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card card-soft h-100"><div class="card-body p-4">
+            <h3 class="section-title">Egresos por categoría</h3>
+            @if (Model.EgresosPorCategoria.Any())
+            {
+                <ul class="list-group list-group-flush">
+                @foreach (var item in Model.EgresosPorCategoria)
+                {
+                    <li class="list-group-item d-flex justify-content-between px-0"><span>@item.Categoria</span><strong>$@item.Total.ToString("N2")</strong></li>
+                }
+                </ul>
+            }
+            else { <p class="text-muted mb-0">Sin egresos en este periodo.</p> }
+        </div></div>
+    </div>
+
+    <div class="col-12">
+        <div class="card card-soft"><div class="card-body p-4">
+            <h3 class="section-title">Alertas y control de presupuestos</h3>
+            @if (Model.Presupuestos.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead><tr><th>Categoría</th><th>Límite</th><th>Gastado</th><th>Uso</th><th>Estado</th></tr></thead>
+                        <tbody>
+                        @foreach (var item in Model.Presupuestos)
+                        {
+                            <tr>
+                                <td>@item.Categoria</td>
+                                <td>$@item.Limite.ToString("N2")</td>
+                                <td>$@item.Gastado.ToString("N2")</td>
+                                <td style="min-width:220px;">
+                                    <div class="progress"><div class="progress-bar @(item.Excedido ? "bg-danger" : item.PorcentajeUsado >= 80 ? "bg-warning" : "bg-success")" style="width:@Math.Min(item.PorcentajeUsado,100)%"></div></div>
+                                    <div class="small text-muted mt-1">@item.PorcentajeUsado.ToString("N1")%</div>
+                                </td>
+                                <td><span class="badge @(item.Excedido ? "text-bg-danger" : item.PorcentajeUsado >= 80 ? "text-bg-warning" : "text-bg-success")">@(item.Excedido ? "Excedido" : item.PorcentajeUsado >= 80 ? "Alerta" : "Normal")</span></td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else { <p class="text-muted mb-0">No hay presupuestos para este periodo.</p> }
+        </div></div>
+    </div>
+
+    <div class="col-12">
+        <div class="card card-soft"><div class="card-body p-4">
+            <h3 class="section-title">Historial de movimientos del mes</h3>
+            @if (Model.Movimientos.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead><tr><th>Fecha</th><th>Tipo</th><th>Categoría</th><th>Descripción</th><th>Monto</th></tr></thead>
+                        <tbody>
+                        @foreach (var item in Model.Movimientos)
+                        {
+                            <tr>
+                                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                                <td><span class="badge @(item.Tipo == "Ingreso" ? "text-bg-success" : "text-bg-danger")">@item.Tipo</span></td>
+                                <td>@(item.Categoria?.Nombre ?? "Sin categoría")</td>
+                                <td>@item.Descripcion</td>
+                                <td>$@item.Monto.ToString("N2")</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else { <p class="text-muted mb-0">No hay movimientos este mes.</p> }
+        </div></div>
+    </div>
+</div>
