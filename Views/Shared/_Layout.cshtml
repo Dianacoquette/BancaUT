@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
+    @{
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    }
     <nav class="navbar navbar-expand-lg navbar-dark navbar-banca">
         <div class="container">
             <a class="navbar-brand fw-bold" asp-controller="Dashboard" asp-action="Index">
@@ -22,14 +25,52 @@
 
             <div class="collapse navbar-collapse" id="menu">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-controller="Movimientos" asp-action="Index"><i class="bi bi-clock-history"></i> Historial</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-controller="Categorias" asp-action="Index"><i class="bi bi-tags"></i> Categorías</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-controller="Presupuestos" asp-action="Index"><i class="bi bi-wallet2"></i> Presupuestos</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-controller="Metas" asp-action="Index"><i class="bi bi-piggy-bank"></i> Metas</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-controller="Recordatorios" asp-action="Index"><i class="bi bi-bell"></i> Recordatorios</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Dashboard" ? "active" : "")"
+                           asp-controller="Dashboard" asp-action="Index">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Movimientos" ? "active" : "")"
+                           asp-controller="Movimientos" asp-action="Index">
+                            <i class="bi bi-clock-history"></i> Historial
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Categorias" ? "active" : "")"
+                           asp-controller="Categorias" asp-action="Index">
+                            <i class="bi bi-tags"></i> Categorías
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Presupuestos" ? "active" : "")"
+                           asp-controller="Presupuestos" asp-action="Index">
+                            <i class="bi bi-wallet2"></i> Presupuestos
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Metas" ? "active" : "")"
+                           asp-controller="Metas" asp-action="Index">
+                            <i class="bi bi-piggy-bank"></i> Metas
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Recordatorios" ? "active" : "")"
+                           asp-controller="Recordatorios" asp-action="Index">
+                            <i class="bi bi-bell"></i> Recordatorios
+                        </a>
+                    </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><i class="bi bi-graph-up-arrow"></i> Reportes</a>
+                        <a class="nav-link dropdown-toggle @(currentController == "Reportes" ? "active" : "")"
+                           href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-graph-up-arrow"></i> Reportes
+                        </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" asp-controller="Reportes" asp-action="BalanceGeneral">Balance general</a></li>
                             <li><a class="dropdown-item" asp-controller="Reportes" asp-action="Mensual">Reporte mensual</a></li>
