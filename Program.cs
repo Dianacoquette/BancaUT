@@ -81,4 +81,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+await SeedData.InicializarAsync(app);
+
 app.Run();
